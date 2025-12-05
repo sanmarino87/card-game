@@ -102,7 +102,6 @@ PLAYBOOK
 # Create task files
 mkdir -p tasks
 
-cat > tasks/postgres.yml << 'POSTGRES'
 ---
 - name: Ensure PostgreSQL is running
   systemd:
@@ -209,7 +208,36 @@ cat > tasks/postgres.yml << 'POSTGRES'
         expires_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL '2 weeks'),
         FOREIGN KEY (game_id) REFERENCES games(id)
       );
-POSTGRES
+
+- name: Grant all permissions to cardgame user
+  become_user: postgres
+  postgresql_query:
+    db: "{{ postgres_db }}"
+    query: |
+      -- Grant database-level privileges
+      GRANT ALL PRIVILEGES ON DATABASE {{ postgres_db }} TO {{ postgres_user }};
+
+      -- Grant schema privileges
+      GRANT ALL PRIVILEGES ON SCHEMA public TO {{ postgres_user }};
+
+      -- Grant privileges on all existing tables
+      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ postgres_user }};
+
+      -- Grant privileges on all sequences
+      GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {{ postgres_user }};
+
+      -- Set default privileges for future tables
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO {{ postgres_user }};
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO {{ postgres_user }};
+
+      -- Make cardgame owner of all tables
+      ALTER TABLE users OWNER TO {{ postgres_user }};
+      ALTER TABLE questions OWNER TO {{ postgres_user }};
+      ALTER TABLE games OWNER TO {{ postgres_user }};
+      ALTER TABLE cards OWNER TO {{ postgres_user }};
+      ALTER TABLE game_players OWNER TO {{ postgres_user }};
+      ALTER TABLE game_history OWNER TO {{ postgres_user }};
+      ALTER TABLE suspended_games OWNER TO {{ postgres_user }};
 
 cat > tasks/app.yml << 'APP'
 ---

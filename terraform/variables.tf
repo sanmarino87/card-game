@@ -70,5 +70,5 @@ variable "domain_name" {
 variable "admin_email" {
   description = "Admin email for SSL certificate"
   type        = string
-  default     = "admin@example.com"
+  default     = "marinodekker@gmail.com"
 }
