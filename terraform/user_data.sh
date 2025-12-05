@@ -512,7 +512,7 @@ echo "=== Setting up Frontend (Vue + Vite) ===" | tee -a /var/log/card-game-init
 cd /home/cardgame/card-game/frontend
 
 # Get the actual IP address
-INSTANCE_IP=$$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || echo "localhost")
+INSTANCE_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || echo "localhost")
 
 cat > package.json << 'FRONTEND_PKG'
 {
