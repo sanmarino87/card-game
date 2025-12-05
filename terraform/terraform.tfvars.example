@@ -1,0 +1,16 @@
+# ============================================
+# terraform/terraform.tfvars.example
+# ============================================
+
+cloud_name       = "cyso"
+app_name         = "card-game"
+environment      = "production"
+image_name       = "Ubuntu 22.04"
+flavor_name      = "m1.medium"
+network_name     = "your-network-name"
+key_pair         = "card-game-key"
+security_groups  = ["default"]
+floating_ip_pool = "public"
+db_password      = "YourSecurePassword123!@#"
+domain_name      = "card-game.yourdomain.com"
+admin_email      = "admin@yourdomain.com"
