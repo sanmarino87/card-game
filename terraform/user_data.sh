@@ -102,6 +102,7 @@ PLAYBOOK
 # Create task files
 mkdir -p tasks
 
+cat > tasks/postgres.yml << 'POSTGRES'
 ---
 - name: Ensure PostgreSQL is running
   systemd:
