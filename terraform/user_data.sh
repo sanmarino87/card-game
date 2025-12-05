@@ -364,6 +364,9 @@ cat > tasks/verify.yml << 'VERIFY'
   command: systemctl is-active card-game-backend
   register: backend_status
   failed_when: backend_status.stdout != "active"
+  retries: 10
+  delay: 2
+  until: backend_status.stdout == "active"
 
 - name: Check Nginx
   command: systemctl is-active nginx
