@@ -215,7 +215,7 @@ cat > tasks/app.yml << 'APP'
 ---
 - name: Clone application if not exists
   git:
-    repo: https://github.com/yourusername/card-game-app.git
+    repo: https://github.com/sanmarino87/card-game.git
     dest: "{{ app_home }}/card-game"
     version: main
   become_user: "{{ app_user }}"
