@@ -512,7 +512,7 @@ echo "=== Setting up Frontend (Vue + Vite) ===" | tee -a /var/log/card-game-init
 cd /home/cardgame/card-game/frontend
 
 # Get the actual IP address
-INSTANCE_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || echo "localhost")
+INSTANCE_IP=$$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || echo "localhost")
 
 cat > package.json << 'FRONTEND_PKG'
 {
@@ -705,7 +705,7 @@ curl -o src/App.vue https://raw.githubusercontent.com/yourusername/card-game-app
           <div class="question-list">
             <div v-for="q in allQuestions" :key="q.id" class="question-item">
               <div class="question-content">
-                <span class="difficulty-tag" :class="\`diff-\$${q.difficulty}\`">{{ ['Makkelijk', 'Medium', 'Moeilijk'][q.difficulty - 1] }}</span>
+                <span class="difficulty-tag" :class="`diff-$${q.difficulty}`">{{ ['Makkelijk', 'Medium', 'Moeilijk'][q.difficulty - 1] }}</span>
                 <span>{{ q.text }}</span>
               </div>
               <button @click="deleteQuestion(q.id)" class="btn-small btn-danger">Verwijder</button>
@@ -752,7 +752,7 @@ export default {
     async login() {
       if (!this.nameInput.trim()) return;
       try {
-        const res = await axios.post(\`\$${API}/users\`, { name: this.nameInput.trim() });
+        const res = await axios.post(`$${API}/users`, { name: this.nameInput.trim() });
         this.currentUser = res.data;
         this.screen = 'menu';
       } catch (e) {
@@ -765,7 +765,7 @@ export default {
     removePlayer(i) { this.gameSetup.players.splice(i, 1); },
     async startGame() {
       try {
-        const res = await axios.post(\`\$${API}/games\`, { point_limit: this.gameSetup.pointLimit, player_names: this.gameSetup.players });
+        const res = await axios.post(`$${API}/games`, { point_limit: this.gameSetup.pointLimit, player_names: this.gameSetup.players });
         this.currentGameId = res.data.game_id;
         this.screen = 'gameplay';
         await this.loadNextCard();
@@ -773,11 +773,11 @@ export default {
     },
     async loadNextCard() {
       try {
-        const res = await axios.get(\`\$${API}/games/\$${this.currentGameId}/next-card\`);
+        const res = await axios.get(`$${API}/games/$${this.currentGameId}/next-card`);
         this.currentGamePlayer = res.data.current_player;
         this.currentQuestions = res.data.questions;
         this.currentCardId = res.data.card_id;
-        const gameRes = await axios.get(\`\$${API}/games/\$${this.currentGameId}\`);
+        const gameRes = await axios.get(`$${API}/games/$${this.currentGameId}`);
         this.gamePlayers = gameRes.data.players;
         this.selectedQuestion = null;
       } catch (e) { alert('Kaart laden mislukt: ' + e.message); }
@@ -785,7 +785,7 @@ export default {
     selectQuestion(question) { this.selectedQuestion = question; },
     async answerQuestion(actionType) {
       try {
-        const res = await axios.post(\`\$${API}/games/\$${this.currentGameId}/answer\`, {
+        const res = await axios.post(`$${API}/games/$${this.currentGameId}/answer`, {
           card_id: this.currentCardId,
           question_id: this.selectedQuestion.id,
           action_type: actionType
@@ -804,7 +804,7 @@ export default {
     async addQuestion() {
       if (!this.newQuestion.text.trim()) return;
       try {
-        await axios.post(\`\$${API}/admin/questions\`, {
+        await axios.post(`$${API}/admin/questions`, {
           user_id: this.currentUser.id,
           difficulty: this.newQuestion.difficulty,
           text: this.newQuestion.text.trim()
@@ -816,14 +816,14 @@ export default {
     },
     async loadAllQuestions() {
       try {
-        const res = await axios.get(\`\$${API}/admin/questions\`);
+        const res = await axios.get(`$${API}/admin/questions`);
         this.allQuestions = res.data;
       } catch (e) { alert('Vragen laden mislukt: ' + e.message); }
     },
     async deleteQuestion(id) {
       if (!confirm('Weet je zeker dat je deze vraag wilt verwijderen?')) return;
       try {
-        await axios.delete(\`\$${API}/admin/questions/\$${id}\`, { data: { user_id: this.currentUser.id } });
+        await axios.delete(`$${API}/admin/questions/$${id}`, { data: { user_id: this.currentUser.id } });
         this.loadAllQuestions();
       } catch (e) { alert('Vraag verwijderen mislukt: ' + e.message); }
     }
@@ -949,20 +949,20 @@ server {
     location /api {
         proxy_pass http://backend;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade $$http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $$host;
+        proxy_cache_bypass $$http_upgrade;
+        proxy_set_header X-Real-IP $$remote_addr;
+        proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $$scheme;
     }
 
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $$uri $$uri/ /index.html;
     }
 
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
@@ -975,6 +975,6 @@ nginx -t && systemctl restart nginx
 systemctl enable nginx
 
 echo "=== Deployment Complete ===" | tee -a /var/log/card-game-init.log
-echo "✅ Backend: http://$INSTANCE_IP:5000" | tee -a /var/log/card-game-init.log
-echo "✅ Frontend: http://$INSTANCE_IP" | tee -a /var/log/card-game-init.log
+echo "✅ Backend: http://$$INSTANCE_IP:5000" | tee -a /var/log/card-game-init.log
+echo "✅ Frontend: http://$$INSTANCE_IP" | tee -a /var/log/card-game-init.log
 echo "✅ Check logs: sudo journalctl -u card-game-backend -f" | tee -a /var/log/card-game-init.log
