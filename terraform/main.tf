@@ -108,16 +108,3 @@ resource "openstack_compute_instance_v2" "card_game" {
     application = var.app_name
   }
 }
-
-# ============================================
-# FLOATING IP
-# ============================================
-
-resource "openstack_networking_floatingip_v2" "card_game" {
-  pool = var.floating_ip_pool
-}
-
-resource "openstack_compute_floatingip_associate_v2" "card_game" {
-  floating_ip = openstack_networking_floatingip_v2.card_game.address
-  instance_id = openstack_compute_instance_v2.card_game.id
-}

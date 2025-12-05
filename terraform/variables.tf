@@ -48,12 +48,6 @@ variable "security_groups" {
   default     = ["default"]
 }
 
-variable "floating_ip_pool" {
-  description = "Floating IP pool name"
-  type        = string
-  default     = "public"
-}
-
 variable "db_password" {
   description = "PostgreSQL password"
   type        = string
@@ -70,5 +64,5 @@ variable "domain_name" {
 variable "admin_email" {
   description = "Admin email for SSL certificate"
   type        = string
-  default     = "marinodekker@gmail.com"
+  default     = "admin@example.com"
 }

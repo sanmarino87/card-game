@@ -13,8 +13,8 @@ output "instance_name" {
 }
 
 output "instance_ip" {
-  description = "Floating IP address"
-  value       = openstack_networking_floatingip_v2.card_game.address
+  description = "Instance IP address"
+  value       = openstack_compute_instance_v2.card_game.access_ip_v4
 }
 
 output "private_ip" {
@@ -24,15 +24,15 @@ output "private_ip" {
 
 output "ssh_command" {
   description = "SSH command to connect to instance"
-  value       = "ssh -i ~/.ssh/card-game-key ubuntu@${openstack_networking_floatingip_v2.card_game.address}"
+  value       = "ssh -i ~/.ssh/card-game-key ubuntu@${openstack_compute_instance_v2.card_game.access_ip_v4}"
 }
 
 output "app_url" {
   description = "Application URL"
-  value       = "http://${openstack_networking_floatingip_v2.card_game.address}"
+  value       = "http://${openstack_compute_instance_v2.card_game.access_ip_v4}"
 }
 
 output "api_url" {
   description = "API URL"
-  value       = "http://${openstack_networking_floatingip_v2.card_game.address}:5000"
+  value       = "http://${openstack_compute_instance_v2.card_game.access_ip_v4}:5000"
 }
