@@ -103,7 +103,6 @@ PLAYBOOK
 mkdir -p tasks
 
 cat > tasks/postgres.yml << 'POSTGRES'
----
 - name: Ensure PostgreSQL is running
   systemd:
     name: postgresql
@@ -239,6 +238,7 @@ cat > tasks/postgres.yml << 'POSTGRES'
       ALTER TABLE game_players OWNER TO {{ postgres_user }};
       ALTER TABLE game_history OWNER TO {{ postgres_user }};
       ALTER TABLE suspended_games OWNER TO {{ postgres_user }};
+POSTGRES
 
 cat > tasks/app.yml << 'APP'
 ---
