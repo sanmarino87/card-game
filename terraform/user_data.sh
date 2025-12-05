@@ -511,8 +511,8 @@ echo "=== Setting up Frontend (Vue + Vite) ===" | tee -a /var/log/card-game-init
 
 cd /home/cardgame/card-game/frontend
 
-# Get the actual IP address
-INSTANCE_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || echo "localhost")
+# Get the actual IP address (try metadata first, then hostname)
+INSTANCE_IP=$(curl -s --connect-timeout 2 http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null || hostname -I | awk '{print $1}')
 
 cat > package.json << 'FRONTEND_PKG'
 {
@@ -949,20 +949,20 @@ server {
     location /api {
         proxy_pass http://backend;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $$http_upgrade;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $$host;
-        proxy_cache_bypass $$http_upgrade;
-        proxy_set_header X-Real-IP $$remote_addr;
-        proxy_set_header X-Forwarded-For $$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $$scheme;
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     location / {
-        try_files $$uri $$uri/ /index.html;
+        try_files $uri $uri/ /index.html;
     }
 
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$$ {
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
