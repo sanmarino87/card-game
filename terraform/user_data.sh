@@ -975,6 +975,6 @@ nginx -t && systemctl restart nginx
 systemctl enable nginx
 
 echo "=== Deployment Complete ===" | tee -a /var/log/card-game-init.log
-echo "✅ Backend: http://$$INSTANCE_IP:5000" | tee -a /var/log/card-game-init.log
-echo "✅ Frontend: http://$$INSTANCE_IP" | tee -a /var/log/card-game-init.log
+echo "✅ Backend: http://$INSTANCE_IP:5000" | tee -a /var/log/card-game-init.log
+echo "✅ Frontend: http://$INSTANCE_IP" | tee -a /var/log/card-game-init.log
 echo "✅ Check logs: sudo journalctl -u card-game-backend -f" | tee -a /var/log/card-game-init.log
