@@ -583,8 +583,8 @@ import './assets/style.css'
 createApp(App).mount('#app')
 MAIN_JS
 
-# Copy complete App.vue from previous artifact
-curl -o src/App.vue https://raw.githubusercontent.com/yourusername/card-game-app/main/frontend/src/App.vue 2>/dev/null || cat > src/App.vue << 'APP_VUE'
+# Create complete App.vue directly (no curl fallback)
+cat > src/App.vue << 'APP_VUE'
 <template>
   <div class="app">
     <div v-if="!currentUser" class="screen">
@@ -832,8 +832,8 @@ export default {
 </script>
 APP_VUE
 
-# Copy CSS from artifact "frontend_css_scripts"
-curl -o src/assets/style.css https://raw.githubusercontent.com/yourusername/card-game-app/main/frontend/src/assets/style.css 2>/dev/null || cat > src/assets/style.css << 'STYLE_CSS'
+# Create complete CSS file directly (no curl fallback)
+cat > src/assets/style.css << 'STYLE_CSS'
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
