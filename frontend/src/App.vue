@@ -4,7 +4,7 @@
     <div v-if="!currentUser" class="screen">
       <div class="container">
         <h1>🎴 Kaartspel</h1>
-        <p>Erotische Party Game</p>
+        <p>Card Game</p>
         <input 
           v-model="nameInput" 
           @keyup.enter="login" 
