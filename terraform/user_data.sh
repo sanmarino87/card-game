@@ -158,8 +158,6 @@ INSERT INTO questions (difficulty, text, points) VALUES
 -- ============================================
 
 INSERT INTO questions (difficulty, text, points) VALUES
-
--- EASY (100 vragen - 1 punt)
 (1, 'Wat is je stiekeme turn-on?', 1),
 (1, 'Heb je ooit een sexdroom gehad over iemand in deze kamer?', 1),
 (1, 'Wat is de meest intieme plek waar je ooit hebt gezoend?', 1),
